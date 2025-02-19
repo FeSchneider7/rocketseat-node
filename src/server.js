@@ -18,19 +18,53 @@ import http from "http";
 //GET /users - Buscar usuarios no Back-End
 //POST /users - criar usuario no Back-End
 
+// stateful - Sempre vai ter informação sendo guardada em memoria
+// Stateless - Não guarda informação em memoria
+
+//JSON - JavaScript Object Notation
+
+//cabeçalho  (requisição e resposta) = são Metadados 
+// Metadados - São dados sobre outros dados
+//Exemplo:  Content-Type: application/json (tipo de conteudo que esta sendo enviado)
+//Exemplo:  Content-Length: 2 (tamanho do conteudo que esta sendo enviado)
+
+//Corpo (requisição e resposta) = são os dados
+
+// http status code - 1xx, 2xx, 3xx, 4xx, 5xx
+// 1xx - Informação (A solicitação foi aceita ou o processo está em andamento)
+// 2xx - Sucesso (ok)
+// 3xx - Redirecionamento ( ação adicional é necessária para completar a solicitação)
+// 4xx - Erro do Cliente (erro do FrontEnd - A solicitação contém sintaxe incorreta ou não pode ser cumprida)
+// 5xx - Erro do Servidor (O servidor falhou ao cumprir uma solicitação aparentemente válida)
+
+
+
+const users = []
+
 const server = http.createServer((req, res) => {
 
     const { method, url } = req;
 
     if (method === "GET" && url === "/users") {
-        return res.end("Listagem de usuarios");
+        return res
+        .setHeader('Content-Type', 'application/json')
+        .end(JSON.stringify(users));
     } 
 
+
     if (method === "POST" && url === "/users") {
-        return res.end("Criação de usuario");
+        users.push({
+            id: 1,
+            name: 'Lucas',
+            email: 'lucasnenem@gmail.com',
+        })
+
+        return res.writeHead(201) .end();
     }
 
-}); // 🔴 Fechamento da função estava faltando aqui
+    return res.writeHead(404).end('Not Found');
+
+}); 
 
 server.listen(3000, () => {
     console.log('✅ Server is running on port 3000 no seu Browser');

@@ -7,7 +7,7 @@ class OneToHundredStream extends Readable {
         const i = this.index++;
 
         setTimeout(() => {
-            if (i > 100) {
+            if (i > 5) {
                 this.push(null);
             } else {
                 this.push(`${i}\n`);
@@ -21,7 +21,8 @@ fetch('http://localhost:3334', {
     body: new OneToHundredStream(),
     duplex: 'half', // 🔥 Corrige o erro no Node.js 18+
     headers: { 'Content-Type': 'text/plain' } // Opcional, mas ajuda no servidor
-})
-  .then(response => response.text())
-  .then(console.log)
-  .catch(console.error);
+}).then(response => {
+    return response.text()
+  }) .then(data =>{
+    console.log(data)
+  })

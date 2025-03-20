@@ -3,5 +3,5 @@
 //buffer é uma forma de representar dados binários
 //buffer é uma forma de representar dados de forma eficiente
 
-const buff = ArrayBuffer.from("Hello World");
+const buff = Buffer.from("Hello World");
 console.log(buff);

@@ -1,4 +1,3 @@
-import http from "http";
 
 // - criar usuarios
 // - listagem de usuarios
@@ -37,28 +36,24 @@ import http from "http";
 // 4xx - Erro do Cliente (erro do FrontEnd - A solicitação contém sintaxe incorreta ou não pode ser cumprida)
 // 5xx - Erro do Servidor (O servidor falhou ao cumprir uma solicitação aparentemente válida)
 
+import http from "http";
+import { Database } from "./database.js";
+import { json } from "./middlewares/json.js";
 
 
-const users = []
+
+const database = new Database 
 
 const server = http.createServer(async (req, res) => {
 
     const { method, url } = req;
 
-    const buffers = []
-
-    for await (const chunk of req) {
-        buffers.push(chunk)
-    }
-
-    try {
-        req.body = JSON.parse(Buffer.concat(buffers).toString())
-    } catch {
-        req.body = {}
-    }
+    await json (req, res);
 
   
     if (method === "GET" && url === "/users") {
+        const users = database.select("users")
+
         return res
         .setHeader('Content-Type', 'application/json')
         .end(JSON.stringify(users));
@@ -69,11 +64,13 @@ const server = http.createServer(async (req, res) => {
         const { name, email} = req.body;
     
 
-        users.push({
+      const user = {
             id: 1,
             name,
             email,
-        })
+        }
+
+        database.insert("users", user)
 
         return res.writeHead(201) .end();
     }
